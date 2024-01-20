@@ -38,19 +38,23 @@ const Login: React.FC<HomeScreenProps> = props => {
   };
 
   const handleLogin = async () => {
-    try {
-      await auth()
-        .signInWithEmailAndPassword(email, pass)
-        .then(userCridentail => {
-          const user = userCridentail.user;
-          if (rememberMe == true) {
-            props.navigation.navigate('Profile', {username});
-          } else props.navigation.navigate('SchoolDashboard', {username});
+    if (email && pass) {
+      try {
+        await auth()
+          .signInWithEmailAndPassword(email, pass)
+          .then(userCridentail => {
+            const user = userCridentail.user;
+            if (rememberMe == true) {
+              props.navigation.navigate('Profile', {username});
+            } else props.navigation.navigate('SchoolDashboard', {username});
 
-          // console.log(user);
-        });
-    } catch (error) {
-      Alert.alert('Failed to Login');
+            // console.log(user);
+          });
+      } catch (error) {
+        Alert.alert('Failed to Login');
+      }
+    } else {
+      Alert.alert('Empty Credentials');
     }
   };
   const handleRegister = async () => {
@@ -109,10 +113,14 @@ const Login: React.FC<HomeScreenProps> = props => {
             <TextInput
               placeholder="Enter Your Email"
               maxLength={100}
+              placeholderTextColor="#424242"
               value={email}
               onChangeText={val => setEmail(val)}
               keyboardType="email-address"
-              style={styles.input}
+              style={[
+                styles.input,
+                isDark ? {color: 'black'} : {color: '#212121'},
+              ]}
               autoCapitalize="none"
               autoComplete="email"></TextInput>
           </View>
@@ -126,6 +134,7 @@ const Login: React.FC<HomeScreenProps> = props => {
             </Text>
             <TextInput
               placeholder="Enter Your Password"
+              placeholderTextColor="#424242"
               maxLength={100}
               value={pass}
               onChangeText={val => setPass(val)}
@@ -138,13 +147,7 @@ const Login: React.FC<HomeScreenProps> = props => {
           </View>
         </View>
 
-        <View
-          style={[
-            styles.checkbox,
-            isDark
-              ? {backgroundColor: 'whitesmoke'}
-              : {backgroundColor: '#212121'},
-          ]}>
+        <View style={[styles.checkbox]}>
           <CheckBox
             title="Parent"
             checked={rememberMe}
@@ -234,5 +237,6 @@ const styles = StyleSheet.create({
   checkbox: {
     // alignSelf: 'center',
     marginBottom: 5,
+    backgroundColor: 'whitesmoke',
   },
 });
